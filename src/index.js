@@ -8,8 +8,23 @@ import reducers from './reducers';
 
 const createStoreWithMiddleware = applyMiddleware()(createStore);
 
+//TODO: move this somewhere else
+const initialState = {sequence: getInitialState()};
+function getInitialState() {
+    let search = window.location.search;
+    if (!search || !search.length) {
+        return {};
+    }
+
+    let encoded = search.split('=')[1];
+    return JSON.parse(window.atob(encoded));
+}
+
+
 ReactDOM.render(
-  <Provider store={createStoreWithMiddleware(reducers)}>
+  <Provider store={createStoreWithMiddleware(reducers, initialState)}>
     <App />
   </Provider>
   , document.querySelector('.container'));
+
+
