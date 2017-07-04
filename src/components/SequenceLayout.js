@@ -2,132 +2,181 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { hoverResidue } from "../actions/index";
 import { bindActionCreators } from "redux";
-import * as d3 from 'd3';
+import cy from 'cytoscape';
+import edgehandles from 'cytoscape-edgehandles';
+edgehandles(cy);
+import getCyNode from "../utils/cyNode"
+import getCyEdge from "../utils/cyEdge"
 
 class SequenceLayout extends Component {
     componentDidMount(){
         this.createLayout();
+    }
+
+    componentDidUpdate(){
         this.updateLayout()
     }
 
-    componentDidUpdate() {
-        this.updateLayout()
+    componentWillReceiveProps(nextProps){
+        this.updateColors(this.props.currentStyles.colors, nextProps.currentStyles.colors)
+        this.applyHover();
     }
 
     render() {
         return (
-            <svg width="500" height="500">
-            </svg>
+            <div id="cy">
+            </div>
         );
     }
 
-    createLayout() {
-        const svg = d3.select("svg"),
-            width = +svg.attr("width"),
-            height = +svg.attr("height");
-        let g = svg.append("g").attr('class', 'container').attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-        g.append("g").attr('class', 'bases');
-        g.append("g").attr('class', 'backbone');
-        g.append("g").attr('class', 'basePair');
+    createLayout(){
+        this.cy = cy({
+            container: document.getElementById('cy'),
+            zoom: 1,
+            pan: { x: 0, y: 0 },
+
+            // interaction options:
+            minZoom: 1e-50,
+            maxZoom: 1e50,
+            zoomingEnabled: true,
+            userZoomingEnabled: true,
+            panningEnabled: true,
+            userPanningEnabled: true,
+            boxSelectionEnabled: false,
+            selectionType: 'single',
+
+            style: [
+                {
+                    selector: 'node',
+                    style: {
+                        'content': 'data(name)'
+                    }
+                },
+                {
+                    selector: '.background-Red',
+                    style: {
+                        'background-color': 'Red'
+                    }
+                },
+                {
+                    selector: '.background-Orange',
+                    style: {
+                        'background-color': 'Orange'
+                    }
+                },
+                {
+                    selector: '.background-Yellow',
+                    style: {
+                        'background-color': 'Yellow'
+                    }
+                },
+                {
+                    selector: '.background-Green',
+                    style: {
+                        'background-color': 'Green'
+                    }
+                },
+                {
+                    selector: '.background-Blue',
+                    style: {
+                        'background-color': 'Blue'
+                    }
+                },
+                {
+                    selector: '.background-Indigo',
+                    style: {
+                        'background-color': 'Indigo'
+                    }
+                },
+                {
+                    selector: '.background-Violet',
+                    style: {
+                        'background-color': 'Violet'
+                    }
+                },
+                {
+                    selector: '.bg-primary',
+                    style: {
+                        'background-color': 'Aqua'
+                    }
+                },
+                //{
+                //    selector: '.edgehandles-hover',
+                //    style: {
+                //        'background-color': 'Aqua'
+                //    }
+                //},
+                {
+                    selector: 'edge',
+                    style: {
+                        'width': 3,
+                        'line-color': '#ccc'
+                    }
+                }
+            ]
+        })
+
+        this.cy.on('mouseover', 'node', (evt) => {
+            let id = evt.target.id();
+                id = id.split('_')[1];
+            this.props.hoverResidue({idx: parseInt(id, 10), val: true})
+        });
+        this.cy.on('mouseout', 'node', (evt) => {
+            let id = evt.target.id();
+            id = id.split('_')[1];
+            this.props.hoverResidue({idx: parseInt(id, 10), val: false})
+        })
     }
 
-    updateLayout() {
-        let sequence = this.props.currentSequence;
-        const baseG = d3.select("g.bases");
-        const backboneG = d3.select("g.backbone");
-        const basePairG = d3.select("g.basePair");
-
-        const svg = d3.select("svg"),
-            width = +svg.attr("width"),
-            height = +svg.attr("height");
-
-        let backBone = _.reduce(sequence, (mem, value, idx)=>{
-            if (sequence[idx + 1]) {
-                mem.push({source: idx, target: idx + 1})
-            }
+    updateLayout(){
+        let {nodes, links} = _.reduce(this.props.currentSequence, (mem, sequenceMember, idx)=>{
+            mem.nodes.push(getCyNode(sequenceMember));
+            mem.links = mem.links.concat(_.map(sequenceMember.links, (link)=>{
+                return getCyEdge(idx, link);
+            }));
             return mem;
-        },[]);
+        }, {nodes: [], links: []});
 
-        let backBoneLinks = backboneG.selectAll("line")
-            .data(backBone);
+        this.cy.add([...nodes, ...links]);
+    }
 
-        backBoneLinks.enter().append("line")
-            .attr("stroke", "#999")
-            .attr("stroke-width", '1.5')
-            .merge(backBoneLinks);
+    updateColors(currentColors, nextColors) {
+        //TODO: check if any colors have changed first
+        this.cy.batch(()=>{
+            this.cy.$('.A')
+                .removeClass(`background-${currentColors.aColor}`)
+                .addClass(`background-${nextColors.aColor}`)
+            this.cy.$('.T')
+                .removeClass(`background-${currentColors.tColor}`)
+                .addClass(`background-${nextColors.tColor}`)
+            this.cy.$('.C')
+                .removeClass(`background-${currentColors.cColor}`)
+                .addClass(`background-${nextColors.cColor}`)
+            this.cy.$('.G')
+                .removeClass(`background-${currentColors.gColor}`)
+                .addClass(`background-${nextColors.gColor}`)
+        })
+    }
 
+    applyHover() {
+        let hovered = _.find(this.props.currentSequence, (residue)=>{
+            return residue.hover;
+        }, null);
 
-        let stack = [];
-        let basePairings = _.reduce(sequence, (mem, value, idx)=>{
-            if (value.dbn === '(') stack.push(idx);
-            else if (value.dbn === ')') {
-                let complementIdx = stack.pop();
-                mem.push({source: complementIdx, target: idx})
-            }
-            return mem;
-        }, []);
+        this.cy.$('.bg-primary')
+            .removeClass('bg-primary');
 
-        let basePairingLinks = basePairG.selectAll("line")
-            .data(basePairings);
-
-        basePairingLinks.enter().append("line")
-            .attr("stroke", "#999")
-            .attr("stroke-width", '1.5')
-            .merge(basePairingLinks);
-
-        let bases = baseG.selectAll("circle")
-            .data(sequence)
-            .attr("class", function(d) { return d.hover ? 'hovered': 'not-hovered'});
-
-        baseG.selectAll("circle.hovered")
-            .attr("stroke-width", "3")
-            .attr("stroke", "Black");
-
-        baseG.selectAll("circle.not-hovered")
-            .attr("stroke-width", '0');
-
-        bases.enter().append("circle")
-            .attr("r", 5)
-            .attr("class", "not-hovered")
-            .attr("fill", function(d) { return d.color; })
-            .text(function(d){ return d.residue })
-            .merge(bases);
-
-        var simulation = d3.forceSimulation();
-
-        simulation.nodes(sequence)
-            .on("tick", ticked);
-
-        simulation.force("charge", d3.forceManyBody().strength(-1000))
-            .force("link", d3.forceLink(backBone).distance(20))
-            .force("link", d3.forceLink(basePairings).distance(1))
-            .force("x", d3.forceX())
-            .force("y", d3.forceY());
-
-
-        function ticked() {
-            backBoneLinks
-                .attr("x1", function(d) { return d.source.x; })
-                .attr("y1", function(d) { return d.source.y; })
-                .attr("x2", function(d) { return d.target.x; })
-                .attr("y2", function(d) { return d.target.y; });
-
-            basePairingLinks
-                .attr("x1", function(d) { return d.source.x; })
-                .attr("y1", function(d) { return d.source.y; })
-                .attr("x2", function(d) { return d.target.x; })
-                .attr("y2", function(d) { return d.target.y; });
-
-            bases
-                .attr("cx", function(d) { return d.x; })
-                .attr("cy", function(d) { return d.y; });
+        if (hovered) {
+            let node = this.cy.$(`node[id = "node_${hovered.idx}"]`)
+                node.addClass('bg-primary')
         }
     }
 }
 
 function mapStateToProps(state) {
     return {
-        currentSequence: state.sequence.currentSequence
+        currentSequence: state.sequence.currentSequence,
+        currentStyles: state.sequence.currentStyles
     };
 }
 

@@ -9,9 +9,9 @@ export default class App extends Component {
   render() {
     return (
         <div>
-            <SequenceInput />
-            <SequenceDisplay />
             <SequenceLayout />
+            <SequenceDisplay />
+            <SequenceInput />
             <ColorSelector />
             <GetShareable />
         </div>

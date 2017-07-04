@@ -15,6 +15,7 @@ export function submitSequence(props) {
 }
 
 export function hoverResidue(props) {
+    console.log('HOVER', props);
     return {
         type: HOVER_RESIDUE,
         payload: props

@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import naview from '../utils/naview/getnaview'
 
 const initialStyles = {
     colors: {
@@ -20,7 +21,8 @@ function stylesReducer(state=initialStyles, action) {
 function sequenceReducer(state=[], action, styles) {
     switch (action.type) {
         case 'SEQUENCE_CHANGE':
-            return _mapSequenceToModel(action.payload, styles);
+            return _getCoords(_mapSequenceToModel(action.payload, styles));
+
         case 'HOVER_RESIDUE':
             return _setHoverValue(state, action.payload);
         case 'CHANGE_COLOR':
@@ -81,6 +83,38 @@ function _applyColor(currentState, {aColor, tColor, cColor, gColor}) {
         }
         return residue;
     })
+}
+
+function _getCoords(sequence){
+    let stack = [];
+
+    let {nodes, links} = _.reduce(sequence, (mem, memberOfSequence, idx)=>{
+        mem.nodes.push({name: memberOfSequence.residue});
+        if (sequence[idx - 1]) {
+            mem.links.push({source: idx-1, target: idx, type: 'phosphodiester'})
+        }
+        if (memberOfSequence.dbn === '(') {
+            stack.push(idx);
+        }
+        else if (memberOfSequence.dbn === ')') {
+            let source = stack.pop();
+            let target = idx;
+            mem.links.push({source, target, type: 'hbond'})
+        }
+        return mem;
+    },{nodes: [], links: []});
+
+    let coords = naview(nodes, links);
+    let sequenceWithCoords = _.map(sequence, (memberOfSequence, idx)=>{
+         return _.assign({}, memberOfSequence, coords[idx])
+     });
+
+    _.each(links, ({source, target, type})=>{
+        sequenceWithCoords[source].links = sequenceWithCoords[source].links || [];
+        sequenceWithCoords[source].links.push({target, type})
+    });
+
+    return sequenceWithCoords;
 }
 
 function _parseSequence(sequence, dbn) {
