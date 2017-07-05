@@ -1,20 +1,22 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { hoverResidue } from "../actions/index";
+import { hoverResidue, updateLayoutJson } from "../actions/index";
 import { bindActionCreators } from "redux";
 import cy from 'cytoscape';
 import edgehandles from 'cytoscape-edgehandles';
 edgehandles(cy);
 import getCyNode from "../utils/cyNode"
 import getCyEdge from "../utils/cyEdge"
+import parseCSSforCy from "../utils/parseCSSforCy"
 
 class SequenceLayout extends Component {
     componentDidMount(){
-        this.createLayout();
+        parseCSSforCy(this.createLayout.bind(this));
     }
 
     componentDidUpdate(){
-        this.updateLayout()
+        this.updateLayout();
+        this.updateCyJson();
     }
 
     componentWillReceiveProps(nextProps){
@@ -29,96 +31,52 @@ class SequenceLayout extends Component {
         );
     }
 
-    createLayout(){
+    createLayout(style){
+        style = style.concat([{
+            selector: 'node',
+            style: {
+                    'content': 'data(name)'
+                }
+            },
+            {
+                selector: 'edge',
+                style: {
+                    'width': 3,
+                    'line-color': '#ccc'
+                }
+            }
+            ]);
+
         this.cy = cy({
             container: document.getElementById('cy'),
-            zoom: 1,
-            pan: { x: 0, y: 0 },
+            style: style
+        });
 
-            // interaction options:
-            minZoom: 1e-50,
-            maxZoom: 1e50,
-            zoomingEnabled: true,
-            userZoomingEnabled: true,
-            panningEnabled: true,
-            userPanningEnabled: true,
-            boxSelectionEnabled: false,
-            selectionType: 'single',
+        if (!_.isEmpty(this.props.currentLayout)) {
+            this.cy.json(JSON.parse(this.props.currentLayout))
+        }
+        else {
+            this.cy.json({
+                zoom: 1,
+                pan: { x: 0, y: 0 },
+                minZoom: 1e-50,
+                maxZoom: 1e50,
+                zoomingEnabled: true,
+                userZoomingEnabled: true,
+                panningEnabled: true,
+                userPanningEnabled: true,
+                boxSelectionEnabled: false,
+                selectionType: 'single'
+            })
+        }
 
-            style: [
-                {
-                    selector: 'node',
-                    style: {
-                        'content': 'data(name)'
-                    }
-                },
-                {
-                    selector: '.background-Red',
-                    style: {
-                        'background-color': 'Red'
-                    }
-                },
-                {
-                    selector: '.background-Orange',
-                    style: {
-                        'background-color': 'Orange'
-                    }
-                },
-                {
-                    selector: '.background-Yellow',
-                    style: {
-                        'background-color': 'Yellow'
-                    }
-                },
-                {
-                    selector: '.background-Green',
-                    style: {
-                        'background-color': 'Green'
-                    }
-                },
-                {
-                    selector: '.background-Blue',
-                    style: {
-                        'background-color': 'Blue'
-                    }
-                },
-                {
-                    selector: '.background-Indigo',
-                    style: {
-                        'background-color': 'Indigo'
-                    }
-                },
-                {
-                    selector: '.background-Violet',
-                    style: {
-                        'background-color': 'Violet'
-                    }
-                },
-                {
-                    selector: '.bg-primary',
-                    style: {
-                        'background-color': 'Aqua'
-                    }
-                },
-                //{
-                //    selector: '.edgehandles-hover',
-                //    style: {
-                //        'background-color': 'Aqua'
-                //    }
-                //},
-                {
-                    selector: 'edge',
-                    style: {
-                        'width': 3,
-                        'line-color': '#ccc'
-                    }
-                }
-            ]
-        })
+        this.registerHoverListeners();
+    }
 
+    registerHoverListeners(){
         this.cy.on('mouseover', 'node', (evt) => {
             let id = evt.target.id();
-                id = id.split('_')[1];
+            id = id.split('_')[1];
             this.props.hoverResidue({idx: parseInt(id, 10), val: true})
         });
         this.cy.on('mouseout', 'node', (evt) => {
@@ -163,25 +121,31 @@ class SequenceLayout extends Component {
             return residue.hover;
         }, null);
 
-        this.cy.$('.bg-primary')
-            .removeClass('bg-primary');
+        this.cy.$('.hover')
+            .removeClass('hover');
 
         if (hovered) {
             let node = this.cy.$(`node[id = "node_${hovered.idx}"]`)
-                node.addClass('bg-primary')
+                node.addClass('hover')
         }
+    }
+
+    updateCyJson() {
+        let json = this.cy.json();
+        this.props.updateLayoutJson(JSON.stringify(json || {}));
     }
 }
 
 function mapStateToProps(state) {
     return {
         currentSequence: state.sequence.currentSequence,
-        currentStyles: state.sequence.currentStyles
+        currentStyles: state.sequence.currentStyles,
+        currentLayout: state.layout
     };
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ hoverResidue }, dispatch);
+    return bindActionCreators({ hoverResidue, updateLayoutJson }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(SequenceLayout);

@@ -8,7 +8,7 @@ class SequenceDisplay extends Component {
         return this.props.currentSequence.map(({idx, residue, hover, color})=>{
             return (
                 <td
-                    className={`${hover ? 'bg-primary text-white': ''} background-${color}`}
+                    className={`${hover ? 'hover text-white': ''} background-${color}`}
                     key={`residue-${idx}`}
                     onMouseEnter={() => this.props.hoverResidue({idx, val: true})}
                     onMouseLeave={() => this.props.hoverResidue({idx, val: false})}
@@ -23,7 +23,7 @@ class SequenceDisplay extends Component {
         return this.props.currentSequence.map(({idx, dbn, hover})=>{
             return (
                 <td
-                    className={`${hover ? 'bg-primary text-white': ''}`}
+                    className={`${hover ? 'hover text-white': ''}`}
                     key={`dbn-${idx}`}
                     onMouseEnter={() => this.props.hoverResidue({idx, val: true})}
                     onMouseLeave={() => this.props.hoverResidue({idx, val: false})}
@@ -38,7 +38,7 @@ class SequenceDisplay extends Component {
         return this.props.currentSequence.map(({idx, hover})=>{
             return (
                 <td
-                    className={`${hover ? 'bg-primary text-white': ''}`}
+                    className={`${hover ? 'hover text-white': ''}`}
                     key={`idx-${idx}`}
                     onMouseEnter={() => this.props.hoverResidue({idx, val: true})}
                     onMouseLeave={() => this.props.hoverResidue({idx, val: false})}

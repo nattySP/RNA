@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { getShareable } from "../actions/index";
 import { bindActionCreators } from "redux";
 
 class GetShareable extends Component {
@@ -24,12 +23,11 @@ class GetShareable extends Component {
 
 function mapStateToProps(state) {
     return {
-        shareable: state.sequence
+        shareable: {
+            sequence: state.sequence,
+            layout: state.layout
+        }
     }
 }
 
-function mapDispatchToProps(dispatch) {
-    return bindActionCreators({getShareable}, dispatch)
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(GetShareable);
+export default connect(mapStateToProps, null)(GetShareable);

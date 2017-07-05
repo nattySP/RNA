@@ -2,7 +2,7 @@
 const SEQUENCE_CHANGE = 'SEQUENCE_CHANGE';
 const HOVER_RESIDUE = 'HOVER_RESIDUE';
 const CHANGE_COLOR = 'CHANGE_COLOR';
-const GET_SHAREABLE = 'GET_SHAREABLE';
+const UPDATE_LAYOUT_JSON = 'UPDATE_LAYOUT_JSON';
 
 export function submitSequence(props) {
     return {
@@ -15,7 +15,6 @@ export function submitSequence(props) {
 }
 
 export function hoverResidue(props) {
-    console.log('HOVER', props);
     return {
         type: HOVER_RESIDUE,
         payload: props
@@ -29,9 +28,9 @@ export function updateColor(props) {
     }
 }
 
-export function getShareable(props) {
+export function updateLayoutJson(props) {
     return {
-        type: GET_SHAREABLE,
+        type: UPDATE_LAYOUT_JSON,
         payload: props
     }
 }
