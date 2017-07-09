@@ -18,7 +18,7 @@ class SequenceInput extends Component {
     render(){
         const {fields: { sequence, dbn }, handleSubmit } = this.props;
         return (
-            <form className="sequence-input" onSubmit={handleSubmit(this.props.submitSequence)}>
+            <form className="sequence-input">
                 <h3>Input A Sequence </h3>
                 <div className={`form-group ${sequence.touched && sequence.invalid ? 'has-danger' : ''}`}>
                     <label>sequence</label>
@@ -35,7 +35,7 @@ class SequenceInput extends Component {
                     </div>
                 </div>
 
-                <button type="submit" className="btn btn-primary">Submit</button>
+                <button onClick={handleSubmit(this.props.submitSequence)} className="btn btn-primary">Submit Sequence</button>
             </form>
         )
     }
@@ -60,9 +60,9 @@ function validate(values) {
         errors.dbn = 'Brackets are not balanced'
     }
 
-    //if (hasInvalidPairing(values.dbn, values.sequence)) {
-    //    errors.dbn = 'Dot Bracket Notation indicates illegal base pairing'
-    //}
+    if (hasInvalidPairing(values.dbn, values.sequence)) {
+        errors.dbn = 'Dot Bracket Notation indicates illegal base pairing'
+    }
 
     return errors;
 }
@@ -96,7 +96,7 @@ function hasInvalidPairing(input, sequence) {
             let complementIdx = stack.pop();
             let currentBase = sequence[idx];
             let complementBase = sequence[complementIdx];
-            if (pairings[currentBase] !== complementBase) {
+            if (pairings.hasOwnProperty(currentBase) && pairings[currentBase] !== complementBase) {
                 invalidPairing = true
             }
         }

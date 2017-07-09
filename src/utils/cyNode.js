@@ -1,9 +1,9 @@
-export default function getCyNode({idx, residue, color, x, y, hover}){
+export default function getCyNode({idx, residue, color, x, y}, fivePrime, threePrime){
     return {
         "group" : "nodes",
         "data" : {
-            "id": `node_${idx}`,
-            "name": residue
+            "id": `node_${residue}_${idx}`,
+            "name": `${residue}${fivePrime ? " - 5'" : (threePrime ? " - 3'" : '')}`
         },
         "position" : {
             x,

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { reduxForm } from 'redux-form';
-import { updateColor } from '../actions/index';
+import { updateColor, updateResidueSize } from '../actions/index';
 
 class ColorSelector extends Component {
     componentDidMount(){
@@ -8,67 +8,41 @@ class ColorSelector extends Component {
     }
 
     handleInitialize(){
-        this.props.initializeForm(this.props.colors)
+        this.props.initializeForm(_.assign({}, this.props.colors))
     }
 
     render(){
-        const {fields: { aColor, tColor, gColor, cColor }, handleSubmit} = this.props;
+        const {fields: { aColor, tColor, gColor, cColor, nColor }, handleSubmit} = this.props;
+        let fieldArray = [{field: aColor, label: 'A'}, {field: tColor, label: 'T'}, {field: gColor, label: 'G'}, { field: cColor, label: 'C'}, {field: nColor, label: 'N'}];
         return (
             <form>
-                <h3>Select A Color </h3>
                 <div className={`form-group`}>
-                    <label>A</label>
+                    {this.getColorInputs(fieldArray, handleSubmit)}
+                </div>
+            </form>
+        );
+    }
+
+    getColorInputs(fields, handleSubmit) {
+        //debugger;
+        return fields.map(({field, label}, idx)=>{
+            return (
+                <div key={idx}>
+                    <label>{label}</label>
                     <select className="form-control"
-                        {...aColor}
+                        {...field}
                             onChange={ event => {
-                                    aColor.onChange(event);
-                                    setTimeout(()=>{
-                                        handleSubmit(this.props.onSubmit)
-                                    })
-                                }
+                                field.onChange(event);
+                                setTimeout(()=>{
+                                    handleSubmit(this.props.onSubmit)
+                                })
                             }
-                        >
-                        {getOptions()}
-                    </select>
-                    <label>T</label>
-                    <select className="form-control"
-                        {...tColor}
-                            onChange={ event => {
-                                    tColor.onChange(event);
-                                    setTimeout(()=>{
-                                        handleSubmit(this.props.onSubmit)
-                                    })
-                                }
-                            }>
-                        {getOptions()}
-                    </select>
-                    <label>G</label>
-                    <select className="form-control"
-                        {...gColor}
-                            onChange={ event => {
-                                    gColor.onChange(event);
-                                    setTimeout(()=>{
-                                        handleSubmit(this.props.onSubmit)
-                                    })
-                                }
-                            }>
-                        {getOptions()}
-                    </select>
-                    <label>C</label>
-                    <select className="form-control"
-                        {...cColor}
-                            onChange={ event => {
-                                    cColor.onChange(event);
-                                    setTimeout(()=>{
-                                        handleSubmit(this.props.onSubmit)
-                                    })
-                                }
-                            }>
+                        }>
                         {getOptions()}
                     </select>
                 </div>
-            </form>
-        )
+            )
+        })
     }
 }
 
@@ -81,9 +55,34 @@ function getOptions() {
     })
 }
 
+function validate(values) {
+    const errors = {};
+    if (!values.residueSize) {
+        errors.residueSize = 'Enter a number';
+        return errors;
+    }
+
+    let number;
+    try {
+        number = parseInt(values.residueSize, 10)
+    }
+    catch(e){
+        errors.residueSize = 'Enter a number';
+        return errors;
+    }
+
+    if (number > 100 || number < 20) {
+        errors.residueSize = 'Enter a number from 20 to 100'
+    }
+    return errors;
+}
+
+
+
 export default reduxForm({
     form: `ColorSelectorForm`,
-    fields: ['aColor', 'tColor', 'gColor', 'cColor']
+    fields: ['aColor', 'tColor', 'gColor', 'cColor', 'nColor']
 }, state => ({
-    colors: state.sequence.currentStyles.colors
-}), { onSubmit: updateColor })(ColorSelector);
+    colors: state.sequence.currentStyles.colors,
+    size: state.sequence.currentStyles.size
+}), { onSubmit: updateColor, updateResidueSize })(ColorSelector);
