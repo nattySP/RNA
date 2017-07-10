@@ -46,28 +46,62 @@ class SequenceInput extends Component {
 
 function validate(values) {
     const errors = {};
+
     if (!values.sequence) {
         errors.sequence = 'Enter a sequence'
     }
 
     if (!values.dbn) {
         errors.dbn = 'Enter the dot bracket notation';
-        return errors;
     }
 
-    if (values.dbn.length !== values.sequence.length) {
-        errors.dbn = 'The length of the dot brack notation entered does not match the length of the sequence entered.'
+    if (values.sequence && hasInvalidSequenceChars(values.sequence)) {
+        errors.sequence = 'Enter only A, T, C, G, or N';
     }
 
-    if (!balancedBrackets(values.dbn)) {
+    if (values.dbn && hasInvalidDbnChars(values.dbn)) {
+        errors.dbn = 'Enter only (, ), or .'
+    }
+
+    if ((values.dbn && values.sequence) && values.dbn.length !== values.sequence.length) {
+        errors.dbn = 'The length of the dot bracket notation entered does not match the length of the sequence entered.'
+    }
+
+    if (values.dbn && !balancedBrackets(values.dbn)) {
         errors.dbn = 'Brackets are not balanced'
     }
 
-    if (hasInvalidPairing(values.dbn, values.sequence)) {
+    if ((values.dbn && values.sequence) && hasInvalidPairing(values.dbn, values.sequence)) {
         errors.dbn = 'Dot Bracket Notation indicates illegal base pairing'
     }
 
     return errors;
+}
+
+function hasInvalidSequenceChars(sequence) {
+    const allowedSequenceValues = {
+        'A': true,
+        'T': true,
+        'C': true,
+        'G': true,
+        'N': true
+    };
+
+    return _.some(sequence.split(''), (char)=>{
+        return !allowedSequenceValues[char.toUpperCase()];
+    })
+}
+
+function hasInvalidDbnChars(dbn) {
+    const allowedDbnValues = {
+        '(': true,
+        ')': true,
+        '.': true
+    };
+
+    return _.some(dbn.split(''), (char)=>{
+        return !allowedDbnValues[char];
+    })
 }
 
 function balancedBrackets(input) {
@@ -99,8 +133,8 @@ function hasInvalidPairing(input, sequence) {
             let complementIdx = stack.pop();
             let currentBase = sequence[idx];
             let complementBase = sequence[complementIdx];
-            if (pairings.hasOwnProperty(currentBase) && pairings[currentBase] !== complementBase) {
-                invalidPairing = true
+            if ((pairings.hasOwnProperty(currentBase) && pairings.hasOwnProperty(complementBase)) && pairings[currentBase] !== complementBase) {
+                invalidPairing = true;
             }
         }
     });

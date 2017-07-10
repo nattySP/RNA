@@ -19,6 +19,7 @@ class SequenceLayout extends Component {
             this.cy.batch(()=>{
                 this.cy.remove('node');
                 this.cy.remove('edge');
+                this.resetZoomPan();
             })
         }
         this.updateLayout();
@@ -33,7 +34,10 @@ class SequenceLayout extends Component {
 
     render() {
         return (
-            <div id="cy">
+            <div>
+                <div id="cy">
+                </div>
+                <button className="button is-pulled-right" onClick={()=>{this.resetZoomPan()}}>RESET ZOOM/PAN</button>
             </div>
         );
     }
@@ -106,7 +110,7 @@ class SequenceLayout extends Component {
                 let sourceResidue = getResidueFromNodeElem(sourceNode[0]);
                 let targetResidue = getResidueFromNodeElem(targetNode[0]);
 
-                if (pairings.hasOwnProperty(sourceResidue) && pairings[sourceResidue] !== targetResidue) {
+                if ((pairings.hasOwnProperty(sourceResidue) && pairings.hasOwnProperty(targetResidue)) && pairings[sourceResidue] !== targetResidue) {
                     return null;
                 }
 
@@ -140,7 +144,7 @@ class SequenceLayout extends Component {
         else {
             this.cy.json({
                 zoom: 1,
-                pan: { x: 0, y: 0 },
+                pan: { x: 200, y: 100 },
                 minZoom: 1e-50,
                 maxZoom: 1e50,
                 zoomingEnabled: true,
@@ -242,6 +246,11 @@ class SequenceLayout extends Component {
     updateCyJson() {
         let json = this.cy.json();
         this.props.updateLayoutJson(JSON.stringify(json || {}));
+    }
+
+    resetZoomPan(){
+        this.cy.zoom(1);
+        this.cy.pan({x:200, y:100});
     }
 }
 

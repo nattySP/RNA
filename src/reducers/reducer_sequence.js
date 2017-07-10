@@ -63,9 +63,9 @@ function _mapSequenceToModel({sequence, dbn}, {colors, font}){
     return sequence.map((residue, idx) => {
         return {
             idx,
-            residue,
+            residue: residue.toUpperCase(),
             dbn: dbn[idx],
-            color: colorMap[residue],
+            color: colorMap[residue.toUpperCase()],
             font
         }
     })
