@@ -29,7 +29,7 @@ class SequenceInput extends Component {
                     </p>
                 </div>
                 <div className="field">
-                    <label className="label">DBN</label>
+                    <label className="label">DOT BRACKET NOTATION</label>
                     <p className="control">
                         <input type="text" className={`input ${dbn.touched && dbn.invalid ? 'is-danger' : ''}`} {...dbn}/>
                     </p>
