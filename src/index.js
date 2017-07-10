@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
+import pako from 'pako';
 
 import App from './components/app';
 import reducers from './reducers';
@@ -16,8 +17,10 @@ function getInitialState() {
         return {};
     }
 
-    let encoded = search.split('=')[1];
-    return JSON.parse(window.atob(encoded));
+    let encoded = search.split('?state=')[1];
+    let deflated = window.atob(encoded);
+
+    return JSON.parse(pako.inflate(deflated, { to: 'string' }));
 }
 
 

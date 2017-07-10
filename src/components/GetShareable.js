@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import pako from 'pako';
 import Clipboard from 'clipboard';
 new Clipboard('.button');
 
@@ -29,7 +30,7 @@ class GetShareable extends Component {
     }
 
     getEncodedState() {
-        return window.btoa(JSON.stringify(this.props.shareable))
+        return window.btoa(pako.deflate(JSON.stringify(this.props.shareable), {to: 'string'}));
     };
 }
 
