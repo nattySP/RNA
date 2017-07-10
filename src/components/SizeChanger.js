@@ -18,7 +18,7 @@ class SizeChanger extends Component {
                 <div>
                     <div>
                         <div className="field">
-                            <label className="label">Residue Size</label>
+                            <label className="label">RESIDUE SIZE</label>
                             <p className="control">
                                 <input type="number" min="20" max="100" className={`input ${residueSize.touched && residueSize.invalid ? 'is-danger' : ''}`}
                                     {...residueSize}
@@ -38,7 +38,7 @@ class SizeChanger extends Component {
                     </div>
                     <div>
                         <div className="field">
-                            <label className="label">Bond Width</label>
+                            <label className="label">BOND WIDTH</label>
                             <p className="control">
                                 <input type="number" min="1" max="5" className={`input ${edgeWidth.touched && edgeWidth.invalid ? 'has-danger' : ''}`}
                                     {...edgeWidth}

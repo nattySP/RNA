@@ -14,7 +14,7 @@ export default class App extends Component {
             <section className="hero is-primary">
                 <div className="hero-body">
                     <div className="container">
-                        <h1 className="title"> ExploRNA</h1>
+                        <h1 className="title"> <strong>ExploRNA</strong></h1>
                     </div>
                 </div>
 
@@ -26,7 +26,7 @@ export default class App extends Component {
                     </div>
                     <div className="column">
                         <p className="panel-heading">
-                            Control Layout
+                            LAYOUT CONTROL
                         </p>
                         <div className="panel">
                             <div className="panel-block">
@@ -57,6 +57,15 @@ export default class App extends Component {
                     </div>
                 </div>
             </div>
+            <footer className="footer">
+                <div className="container">
+                    <div className="content has-text-centered">
+                        <p>
+                            <strong>ExploRNA</strong> by <a href="http://codeisbae.com">Natalie Hall</a>.
+                        </p>
+                    </div>
+                </div>
+            </footer>
         </div>
     );
   }

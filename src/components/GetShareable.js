@@ -1,16 +1,28 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import Clipboard from 'clipboard';
+new Clipboard('.button');
 
 class GetShareable extends Component {
     render() {
+        let url = `${window.location.origin}${window.location.pathname}?state=${this.getEncodedState()}`;
         return (
-            <div>
-                Share This Page
+            <div className="box">
+                <h3>
+                    SHARE THIS VIEW
+                </h3>
+                <div className="field">
+                    <button className="button">
+                        <a target="_blank" href={url}>
+                            OPEN VIEW IN NEW TAB
+                        </a>
+                    </button>
+                </div>
                 <div>
-                    <a target="_blank" href={`${window.location.origin}${window.location.pathname}?state=${this.getEncodedState()}`}>
-                        link
-                    </a>
+                    <button className="button is-primary" data-clipboard-text={url}>
+                        COPY LINK TO CLIPBOARD
+                    </button>
                 </div>
             </div>
         )

@@ -20,7 +20,7 @@ class SequenceInput extends Component {
         return (
             <form className="sequence-input">
                 <div className="field">
-                    <label className="label">sequence</label>
+                    <label className="label">SEQUENCE</label>
                     <p className="control">
                         <input type="text" className={`input ${sequence.touched && sequence.invalid ? 'is-danger' : ''}`} {...sequence}/>
                     </p>
@@ -38,7 +38,7 @@ class SequenceInput extends Component {
                     </p>
                 </div>
 
-                <button onClick={handleSubmit(this.props.submitSequence)} className="button is-primary">Submit Sequence</button>
+                <button onClick={handleSubmit(this.props.submitSequence)} className="button is-primary">RENDER SEQUENCE</button>
             </form>
         )
     }

@@ -17,7 +17,7 @@ class FontSelector extends Component {
             <form>
                 <div>
                     <div className="field">
-                        <label className="label">Select Font</label>
+                        <label className="label">FONT</label>
                         <p className="control">
                             <span className="select">
                                 <select
