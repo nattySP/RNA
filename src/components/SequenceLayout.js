@@ -42,10 +42,10 @@ class SequenceLayout extends Component {
         );
     }
 
-    createCyInstance(style){
+    createCyInstance(baseStyle){
         let {residueSize, edgeWidth} = this.props.currentStyles.size;
         let font = this.props.currentStyles.font;
-        style = style.concat([
+        let style = baseStyle.concat([
             {
                 selector: 'node',
                 style: {
@@ -77,66 +77,11 @@ class SequenceLayout extends Component {
             }
         ]);
 
-        //TODO move this to its own service
-        let edghandlesDefaults = {
-            preview: true,
-            stackOrder: 4,
-            handleSize: 10,
-            handleHitThreshold: 6,
-            handleIcon: false,
-            handleColor: '#ff3860',
-            handleLineType: 'straight',
-            handleLineWidth: 2,
-            handleNodes: 'node',
-            handlePosition: 'middle top',
-            hoverDelay: 150,
-            enabled: true,
-            toggleOffOnLeave: true,
-            edgeType: function( sourceNode, targetNode ) {
-                let pairings = {
-                    'A': 'T',
-                    'T': 'A',
-                    'G': 'C',
-                    'C': 'G'
-                };
-
-                let sourceIdx = getIndexFromNodeElem(sourceNode[0]);
-                let targetIdx = getIndexFromNodeElem(targetNode[0]);
-
-                if (Math.abs(sourceIdx - targetIdx) <= 1) {
-                    return null;
-                }
-
-                let sourceResidue = getResidueFromNodeElem(sourceNode[0]);
-                let targetResidue = getResidueFromNodeElem(targetNode[0]);
-
-                if ((pairings.hasOwnProperty(sourceResidue) && pairings.hasOwnProperty(targetResidue)) && pairings[sourceResidue] !== targetResidue) {
-                    return null;
-                }
-
-                return 'flat';
-            },
-            loopAllowed: function( node ) {
-                return false;
-            },
-            edgeParams: ( sourceNode, targetNode, i ) => {
-                let sourceIdx = getIndexFromNodeElem(sourceNode[0]);
-                let targetIdx = getIndexFromNodeElem(targetNode);
-                return getCyEdge(sourceIdx, this.props.currentSequence, {target: targetIdx, type: 'hbond'});
-            },
-            complete: ( sourceNode, targetNodes ) => {
-                let sourceIdx = getIndexFromNodeElem(sourceNode[0]);
-                let targetIdx = getIndexFromNodeElem(targetNodes[0]);
-
-                this.props.newBond({source: Math.min(sourceIdx, targetIdx), target: Math.max(sourceIdx, targetIdx)});
-            }
-        };
-
         this.cy = cy({
             container: document.getElementById('cy')
         });
 
-        this.cy.edgehandles(edghandlesDefaults);
+        this.configureEdgeHandles();
 
         if (!_.isEmpty(this.props.currentLayout)) {
             this.cy.json(_.assign({}, JSON.parse(this.props.currentLayout), {style} ))
@@ -251,6 +196,69 @@ class SequenceLayout extends Component {
     resetZoomPan(){
         this.cy.zoom(1);
         this.cy.pan({x:200, y:100});
+    }
+
+    createNewBondEdgeElement(sourceNode, targetNode){
+        let sourceIdx = getIndexFromNodeElem(sourceNode[0]);
+        let targetIdx = getIndexFromNodeElem(targetNode);
+        return getCyEdge(sourceIdx, this.props.currentSequence, {target: targetIdx, type: 'hbond'});
+    }
+
+    createNewBond(sourceNode, targetNodes) {
+        let sourceIdx = getIndexFromNodeElem(sourceNode[0]);
+        let targetIdx = getIndexFromNodeElem(targetNodes[0]);
+        this.props.newBond({source: Math.min(sourceIdx, targetIdx), target: Math.max(sourceIdx, targetIdx)});
+    }
+
+    checkNewBondValid(sourceNode, targetNode ) {
+        let pairings = {
+            'A': 'T',
+            'T': 'A',
+            'G': 'C',
+            'C': 'G'
+        };
+
+        let sourceIdx = getIndexFromNodeElem(sourceNode[0]);
+        let targetIdx = getIndexFromNodeElem(targetNode[0]);
+
+        if (Math.abs(sourceIdx - targetIdx) <= 1) {
+            return null;
+        }
+
+        let sourceResidue = getResidueFromNodeElem(sourceNode[0]);
+        let targetResidue = getResidueFromNodeElem(targetNode[0]);
+
+        if ((pairings.hasOwnProperty(sourceResidue) && pairings.hasOwnProperty(targetResidue)) && pairings[sourceResidue] !== targetResidue) {
+            return null;
+        }
+
+        return 'flat';
+    }
+
+    configureEdgeHandles() {
+        let edghandlesDefaults = {
+            preview: true,
+            stackOrder: 4,
+            handleSize: 10,
+            handleHitThreshold: 6,
+            handleIcon: false,
+            handleColor: '#ff3860',
+            handleLineType: 'straight',
+            handleLineWidth: 2,
+            handleNodes: 'node',
+            handlePosition: 'middle top',
+            hoverDelay: 150,
+            enabled: true,
+            toggleOffOnLeave: true,
+            edgeType: this.checkNewBondValid.bind(this),
+            loopAllowed: function( node ) {
+                return false;
+            },
+            edgeParams: this.createNewBondEdgeElement.bind(this),
+            complete: this.createNewBond.bind(this)
+        };
+
+        this.cy.edgehandles(edghandlesDefaults);
     }
 }
 
