@@ -1,7 +1,7 @@
 {
-  "name": "redux-simple-starter",
+  "name": "explorna",
   "version": "1.0.0",
-  "description": "Simple starter package for Redux with React and Babel support",
+  "description": "interactive rna secondary structure display",
   "main": "server.js",
   "repository": "git@github.com:nattySP/RNA.git",
   "scripts": {
