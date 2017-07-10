@@ -19,23 +19,26 @@ class SequenceInput extends Component {
         const {fields: { sequence, dbn }, handleSubmit } = this.props;
         return (
             <form className="sequence-input">
-                <h3>Input A Sequence </h3>
-                <div className={`form-group ${sequence.touched && sequence.invalid ? 'has-danger' : ''}`}>
-                    <label>sequence</label>
-                    <input type="text" className="form-control" {...sequence}/>
-                    <div className="text-help">
+                <div className="field">
+                    <label className="label">sequence</label>
+                    <p className="control">
+                        <input type="text" className={`input ${sequence.touched && sequence.invalid ? 'is-danger' : ''}`} {...sequence}/>
+                    </p>
+                    <p className="help is-danger">
                         {sequence.touched ? sequence.error : ''}
-                    </div>
+                    </p>
                 </div>
-                <div className={`form-group ${dbn.touched && dbn.invalid ? 'has-danger' : ''}`}>
-                    <label>DBN</label>
-                    <input type="text" className="form-control" {...dbn}/>
-                    <div className="text-help">
+                <div className="field">
+                    <label className="label">DBN</label>
+                    <p className="control">
+                        <input type="text" className={`input ${dbn.touched && dbn.invalid ? 'is-danger' : ''}`} {...dbn}/>
+                    </p>
+                    <p className="help is-danger">
                         {dbn.touched ? dbn.error: ''}
-                    </div>
+                    </p>
                 </div>
 
-                <button onClick={handleSubmit(this.props.submitSequence)} className="btn btn-primary">Submit Sequence</button>
+                <button onClick={handleSubmit(this.props.submitSequence)} className="button is-primary">Submit Sequence</button>
             </form>
         )
     }

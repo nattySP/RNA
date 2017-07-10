@@ -47,6 +47,7 @@ class SequenceLayout extends Component {
                 style: {
                     'label': 'data(name)',
                     'font-size': `${ residueSize / 2 }`,
+                    'font-weight': 'bold',
                     'text-halign' : 'center',
                     'text-valign' : 'center',
                     'text-outline-color': 'White',
@@ -79,7 +80,7 @@ class SequenceLayout extends Component {
             handleSize: 10,
             handleHitThreshold: 6,
             handleIcon: false,
-            handleColor: 'Pink',
+            handleColor: '#ff3860',
             handleLineType: 'straight',
             handleLineWidth: 2,
             handleNodes: 'node',

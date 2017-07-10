@@ -15,36 +15,46 @@ class SizeChanger extends Component {
         const {fields: { residueSize, edgeWidth }, handleSubmit} = this.props;
         return (
             <form>
-                <div className={`form-group ${residueSize.touched && residueSize.invalid ? 'has-danger' : ''}`}>
-                    <label>Residue Size</label>
-                    <input type="number" min="20" max="100" className="form-control"
-                        {...residueSize}
-                           onChange={ event => {
-                                residueSize.onChange(event);
-                                setTimeout(()=>{
-                                    handleSubmit(this.props.onSubmit)
-                                })
-                            }
-                        }
-                        />
-                    <div className="text-help">
-                        {residueSize.touched ? residueSize.error : ''}
+                <div>
+                    <div>
+                        <div className="field">
+                            <label className="label">Residue Size</label>
+                            <p className="control">
+                                <input type="number" min="20" max="100" className={`input ${residueSize.touched && residueSize.invalid ? 'is-danger' : ''}`}
+                                    {...residueSize}
+                                       onChange={ event => {
+                                            residueSize.onChange(event);
+                                            setTimeout(()=>{
+                                                handleSubmit(this.props.onSubmit)
+                                            })
+                                        }
+                                    }
+                                    />
+                            </p>
+                            <p className="help is-danger">
+                                {residueSize.touched ? residueSize.error : ''}
+                            </p>
+                        </div>
                     </div>
-                </div>
-                <div className={`form-group ${edgeWidth.touched && edgeWidth.invalid ? 'has-danger' : ''}`}>
-                    <label>Bond Width</label>
-                    <input type="number" min="1" max="5" className="form-control"
-                        {...edgeWidth}
-                           onChange={ event => {
-                                edgeWidth.onChange(event);
-                                setTimeout(()=>{
-                                    handleSubmit(this.props.onSubmit)
-                                })
-                            }
-                        }
-                        />
-                    <div className="text-help">
-                        {edgeWidth.touched ? edgeWidth.error : ''}
+                    <div>
+                        <div className="field">
+                            <label className="label">Bond Width</label>
+                            <p className="control">
+                                <input type="number" min="1" max="5" className={`input ${edgeWidth.touched && edgeWidth.invalid ? 'has-danger' : ''}`}
+                                    {...edgeWidth}
+                                       onChange={ event => {
+                                            edgeWidth.onChange(event);
+                                            setTimeout(()=>{
+                                                handleSubmit(this.props.onSubmit)
+                                            })
+                                        }
+                                    }
+                                    />
+                            </p>
+                            <p className="help is-danger">
+                                {edgeWidth.touched ? edgeWidth.error : ''}
+                            </p>
+                        </div>
                     </div>
                 </div>
             </form>

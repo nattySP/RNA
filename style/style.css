@@ -1,3 +1,14 @@
 #cy {
-    height: 500px
+    height: 600px;
+    border: 1px solid black;
+}
+
+.sequence-display-dbn, .sequence-display-idx {
+    background-color: #fafafa;
+    font-weight: bold;
+}
+
+.sequence-display-residues {
+    color: white;
+    font-weight: bold;
 }

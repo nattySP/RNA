@@ -16,7 +16,7 @@ class ColorSelector extends Component {
         let fieldArray = [{field: aColor, label: 'A'}, {field: tColor, label: 'T'}, {field: gColor, label: 'G'}, { field: cColor, label: 'C'}, {field: nColor, label: 'N'}];
         return (
             <form>
-                <div className={`form-group`}>
+                <div>
                     {this.getColorInputs(fieldArray, handleSubmit)}
                 </div>
             </form>
@@ -24,22 +24,31 @@ class ColorSelector extends Component {
     }
 
     getColorInputs(fields, handleSubmit) {
-        //debugger;
         return fields.map(({field, label}, idx)=>{
             return (
-                <div key={idx}>
-                    <label>{label}</label>
-                    <select className="form-control"
-                        {...field}
-                            onChange={ event => {
-                                field.onChange(event);
-                                setTimeout(()=>{
-                                    handleSubmit(this.props.onSubmit)
-                                })
-                            }
-                        }>
-                        {getOptions()}
-                    </select>
+                <div key={idx} className="field">
+                    <div className="columns">
+                        <div className="column has-text-centered">
+                            <label className="label">{label}</label>
+                        </div>
+                        <div className="column">
+                            <p className="control">
+                                <span className="select">
+                                    <select
+                                        {...field}
+                                            onChange={ event => {
+                                                field.onChange(event);
+                                                setTimeout(()=>{
+                                                    handleSubmit(this.props.onSubmit)
+                                                })
+                                            }
+                                        }>
+                                        {getOptions()}
+                                    </select>
+                                </span>
+                            </p>
+                        </div>
+                    </div>
                 </div>
             )
         })

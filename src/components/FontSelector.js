@@ -15,20 +15,24 @@ class FontSelector extends Component {
         const {fields: { font }, handleSubmit} = this.props;
         return (
             <form>
-                <div className={`form-group`}>
-                    <div>
-                        <label>Select Font</label>
-                        <select className="form-control"
-                            {...font}
-                                onChange={ event => {
-                                font.onChange(event);
-                                setTimeout(()=>{
-                                    handleSubmit(this.props.onSubmit)
-                                })
-                            }
-                        }>
-                            {getOptions()}
-                        </select>
+                <div>
+                    <div className="field">
+                        <label className="label">Select Font</label>
+                        <p className="control">
+                            <span className="select">
+                                <select
+                                    {...font}
+                                        onChange={ event => {
+                                        font.onChange(event);
+                                        setTimeout(()=>{
+                                            handleSubmit(this.props.onSubmit)
+                                        })
+                                    }
+                                }>
+                                    {getOptions()}
+                                </select>
+                            </span>
+                        </p>
                     </div>
                 </div>
             </form>
@@ -37,7 +41,7 @@ class FontSelector extends Component {
 }
 
 function getOptions() {
-    const colors = [
+    const fonts = [
         'Helvetica',
         'Arial',
         'Times New Roman',
@@ -51,9 +55,11 @@ function getOptions() {
         'Comic Sans MS',
         'Impact'
     ];
-    return colors.map((color)=>{
+    return fonts.map((font)=>{
         return (
-            <option key={color} value={color}>{color}</option>
+            <option key={font}
+                    value={font}
+                >{font}</option>
         )
     })
 }

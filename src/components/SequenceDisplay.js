@@ -9,7 +9,7 @@ class SequenceDisplay extends Component {
             let hover = this.props.hover === idx;
             return (
                 <td
-                    className={`${hover ? 'hover text-white': ''} background-${color}`}
+                    className={`${hover ? 'hover': ''} background-${color} sequence-display-residues`}
                     style={{'fontFamily': font}}
                     key={`residue-${idx}`}
                     onMouseEnter={() => this.props.hoverResidue({idx, val: true})}
@@ -26,7 +26,7 @@ class SequenceDisplay extends Component {
             let hover = this.props.hover === idx;
             return (
                 <td
-                    className={`${hover ? 'hover text-white': ''}`}
+                    className={`${hover ? 'hover': ''} sequence-display-dbn`}
                     key={`dbn-${idx}`}
                     onMouseEnter={() => this.props.hoverResidue({idx, val: true})}
                     onMouseLeave={() => this.props.hoverResidue({idx, val: false})}
@@ -42,7 +42,7 @@ class SequenceDisplay extends Component {
             let hover = this.props.hover === idx;
             return (
                 <td
-                    className={`${hover ? 'hover text-white': ''}`}
+                    className={`${hover ? 'hover': ''} sequence-display-idx`}
                     key={`idx-${idx}`}
                     onMouseEnter={() => this.props.hoverResidue({idx, val: true})}
                     onMouseLeave={() => this.props.hoverResidue({idx, val: false})}
@@ -55,9 +55,9 @@ class SequenceDisplay extends Component {
 
     render() {
         return (
-            <div className="row">
-                <div className="col-xs-1">5'</div>
-                <div className="col-xs-10">
+            <div className="columns">
+                <div className="column is-1">{this.props.currentSequence.length ? "5'" : ''}</div>
+                <div className="column">
                     <table className="table">
                         <tbody>
                             <tr>
@@ -72,7 +72,7 @@ class SequenceDisplay extends Component {
                         </tbody>
                     </table>
                 </div>
-                <div className="col-xs-1">3'</div>
+                <div className="column is-1">{this.props.currentSequence.length ? "3'" : ''}</div>
             </div>
         );
     }
