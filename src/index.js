@@ -9,7 +9,6 @@ import reducers from './reducers';
 
 const createStoreWithMiddleware = applyMiddleware()(createStore);
 
-//TODO: move this somewhere else
 const initialState = getInitialState();
 function getInitialState() {
     let search = window.location.search;

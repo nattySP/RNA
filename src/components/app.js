@@ -42,7 +42,7 @@ export default class App extends Component {
                     </div>
                 </div>
                 <div className="columns">
-                    <div className="column is-three-quarters">
+                    <div className="column is-11">
                         <SequenceDisplay />
                     </div>
                 </div>

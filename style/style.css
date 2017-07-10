@@ -12,3 +12,9 @@
     color: white;
     font-weight: bold;
 }
+
+.display-container {
+    width: 100%;
+    overflow-x: scroll;
+    overflow-y: hidden;
+}

@@ -55,11 +55,12 @@ class SequenceDisplay extends Component {
 
     render() {
         return (
-            <div className="columns">
-                <div className="column is-1">{this.props.currentSequence.length ? "5'" : ''}</div>
-                <div className="column">
-                    <table className="table">
-                        <tbody>
+            <div className="display-container">
+                <div className="columns">
+                    <div className="column is-1">{this.props.currentSequence.length ? "5'" : ''}</div>
+                    <div className="column">
+                        <table className="table">
+                            <tbody>
                             <tr>
                                 {this.renderIndex()}
                             </tr>
@@ -69,10 +70,11 @@ class SequenceDisplay extends Component {
                             <tr>
                                 {this.renderSequenceDBN()}
                             </tr>
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div className="column is-1">{this.props.currentSequence.length ? "3'" : ''}</div>
                 </div>
-                <div className="column is-1">{this.props.currentSequence.length ? "3'" : ''}</div>
             </div>
         );
     }
