@@ -19,41 +19,56 @@ class SizeChanger extends Component {
                     <div>
                         <div className="field">
                             <label className="label">RESIDUE SIZE</label>
-                            <p className="control">
-                                <input type="number" min="20" max="100" className={`input ${residueSize.touched && residueSize.invalid ? 'is-danger' : ''}`}
-                                    {...residueSize}
-                                       onChange={ event => {
+                            <div className="columns">
+                                <div className="column is-three-quarters">
+                                    <p className="control column-flex">
+                                        <input type="range" min="20" max="100" className={`${residueSize.touched && residueSize.invalid ? 'is-danger' : ''}`}
+                                            {...residueSize}
+                                               onChange={ event => {
                                             residueSize.onChange(event);
                                             setTimeout(()=>{
                                                 handleSubmit(this.props.onSubmit)
                                             })
                                         }
                                     }
-                                    />
-                            </p>
-                            <p className="help is-danger">
-                                {residueSize.touched ? residueSize.error : ''}
-                            </p>
+                                            />
+                                    </p>
+                                    <p className="help is-danger">
+                                        {residueSize.touched ? residueSize.error : ''}
+                                    </p>
+                                </div>
+                                <div className="column has-text-centered">
+                                    <p className="column-flex control-info">{residueSize.value}</p>
+                                </div>
+
+                            </div>
                         </div>
                     </div>
                     <div>
                         <div className="field">
                             <label className="label">BOND WIDTH</label>
-                            <p className="control">
-                                <input type="number" min="1" max="5" className={`input ${edgeWidth.touched && edgeWidth.invalid ? 'has-danger' : ''}`}
-                                    {...edgeWidth}
-                                       onChange={ event => {
+                            <div className="columns">
+                                <div className="column is-three-quarters">
+                                    <p className="control column-flex">
+                                        <input type="range" min="1" max="5" className={`${edgeWidth.touched && edgeWidth.invalid ? 'has-danger' : ''}`}
+                                            {...edgeWidth}
+                                               onChange={ event => {
                                             edgeWidth.onChange(event);
                                             setTimeout(()=>{
                                                 handleSubmit(this.props.onSubmit)
                                             })
                                         }
                                     }
-                                    />
-                            </p>
-                            <p className="help is-danger">
-                                {edgeWidth.touched ? edgeWidth.error : ''}
-                            </p>
+                                            />
+                                    </p>
+                                    <p className="help is-danger">
+                                        {edgeWidth.touched ? edgeWidth.error : ''}
+                                    </p>
+                                </div>
+                                <div className="column has-text-centered">
+                                    <p className="column-flex control-info">{edgeWidth.value}</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

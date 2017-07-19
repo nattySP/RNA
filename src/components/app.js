@@ -28,7 +28,7 @@ export default class App extends Component {
                         <p className="panel-heading">
                             LAYOUT CONTROL
                         </p>
-                        <div className="panel">
+                        <div className="panel no-flex">
                             <div className="panel-block">
                                 <ColorSelector />
                             </div>

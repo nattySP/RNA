@@ -29,7 +29,9 @@ class ColorSelector extends Component {
                 <div key={idx} className="field">
                     <div className="columns">
                         <div className="column has-text-centered">
-                            <label className="label">{label}</label>
+                            <p className="control-info column-flex">
+                                <label className="label">{label}</label>
+                            </p>
                         </div>
                         <div className="column">
                             <p className="control">
