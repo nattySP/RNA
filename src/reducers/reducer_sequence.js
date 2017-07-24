@@ -59,7 +59,6 @@ function _mapSequenceToModel({sequence, dbn}, {colors, font}){
         'C': colors.cColor,
         'N': colors.nColor
     };
-
     return sequence.map((residue, idx) => {
         return {
             idx,
@@ -71,7 +70,7 @@ function _mapSequenceToModel({sequence, dbn}, {colors, font}){
     })
 }
 
-function _applyColor(currentState, {aColor, tColor, cColor, gColor}) {
+function _applyColor(currentState, {aColor, tColor, cColor, gColor, nColor}) {
     return currentState.map((residue)=>{
         switch (residue.residue){
             case 'A':
@@ -83,7 +82,7 @@ function _applyColor(currentState, {aColor, tColor, cColor, gColor}) {
             case 'C':
                 return _.assign({}, residue, {color: cColor});
             case 'N':
-                return _.assign({}, residue, {color: cColor});
+                return _.assign({}, residue, {color: nColor});
         }
         return residue;
     })

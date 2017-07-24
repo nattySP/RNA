@@ -108,11 +108,15 @@ function balancedBrackets(input) {
     let stack = [];
     let array = input.split('');
 
-    _.each(array, (char, idx)=>{
-      if (char === '(') stack.push(idx);
-      else if (char === ')') stack.pop();
-    });
+    for (let i = 0; i < array.length; i++) {
+        let char = array[i];
+          if (char === '(') stack.push(i);
+          else if (char === ')') {
+              let open = stack.pop();
+              if (array[open] !== '(') return false;
+          }
 
+    }
     return !stack.length;
 }
 
